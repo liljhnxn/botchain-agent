@@ -6,7 +6,6 @@ import { ArrowLeft, Bot, CheckCircle2, ShieldCheck, Wallet } from "lucide-react"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getAccount, switchChain, waitForTransactionReceipt, writeContract } from "@wagmi/core";
-import { parseEther } from "viem";
 import { wagmiConfig } from "@/app/providers";
 import {
   AGENT_REGISTRY_ABI,
@@ -64,22 +63,13 @@ export default function ListAgentPage() {
         await switchChain(wagmiConfig, { chainId: botchainTestnet.id });
       }
 
-      const priceMatch = payload.price.match(/^\s*([0-9]+(?:\.[0-9]+)?)\s*(?:BOT)?\s*$/i);
-      if (!priceMatch) {
-        throw new Error("Price must be a positive BOT amount, for example 0.25 BOT.");
-      }
-      const priceWei = parseEther(priceMatch[1]);
-      if (priceWei <= BigInt(0)) {
-        throw new Error("Price must be greater than zero.");
-      }
-
       let onchainTx: string | null = null;
 
       const hash = await writeContract(wagmiConfig, {
         address: REGISTRY_ADDRESS,
         abi: AGENT_REGISTRY_ABI,
         functionName: "listAgent",
-        args: [payload.name, payload.category, payload.price, payload.description, payload.usageTier, priceWei],
+        args: [payload.name, payload.category, payload.price, payload.description, payload.usageTier],
         chainId: botchainTestnet.id,
       });
       onchainTx = hash;

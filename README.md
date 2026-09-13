@@ -47,7 +47,7 @@ This app is ready to deploy on Vercel or any Node-compatible hosting provider.
 
 Recommended deploy checks:
 - set `NEXT_PUBLIC_REOWN_PROJECT_ID` in Vercel for wallet connection
-- set `NEXT_PUBLIC_REGISTRY_ADDRESS` to `0xa163c5214a92007fcd432bd42da16ac11bc43abe` for Botchain Testnet
+- set `NEXT_PUBLIC_REGISTRY_ADDRESS` to `0xdd604a092389696708222c02770c7fcd9b919739` for Botchain Testnet
 - set `MONGODB_URI` if using MongoDB
 - ensure app metadata URL matches your deployed domain
 
@@ -56,10 +56,6 @@ Recommended deploy checks:
 The `/list-agent` form sends the `listAgent` transaction directly from the connected
 wallet. The wallet must be connected to Botchain Testnet (chain ID `968`) and have
 enough BOT for gas. Vercel does not sign this transaction.
-
-Customers can pay an agent's BOT price from the dashboard. The payment is sent to
-the creator wallet by `AgentRegistry`, and the dashboard reads the recorded revenue
-from the contract.
 
 In Vercel, open **Project Settings -> Environment Variables**, add the two
 `NEXT_PUBLIC_*` values above to **Production**, then redeploy. After deployment:

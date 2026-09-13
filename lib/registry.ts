@@ -28,16 +28,8 @@ export const AGENT_REGISTRY_ABI = [
       { name: "price", type: "string" },
       { name: "description", type: "string" },
       { name: "usageTier", type: "string" },
-      { name: "priceWei", type: "uint256" },
     ],
     outputs: [{ name: "id", type: "uint256" }],
-  },
-  {
-    type: "function",
-    name: "purchaseAgent",
-    stateMutability: "payable",
-    inputs: [{ name: "id", type: "uint256" }],
-    outputs: [],
   },
   {
     type: "function",
@@ -63,7 +55,6 @@ export const AGENT_REGISTRY_ABI = [
           { name: "price", type: "string" },
           { name: "description", type: "string" },
           { name: "usageTier", type: "string" },
-          { name: "priceWei", type: "uint256" },
           { name: "createdAt", type: "uint256" },
         ],
       },
@@ -86,7 +77,6 @@ export const AGENT_REGISTRY_ABI = [
           { name: "price", type: "string" },
           { name: "description", type: "string" },
           { name: "usageTier", type: "string" },
-          { name: "priceWei", type: "uint256" },
           { name: "createdAt", type: "uint256" },
         ],
       },
@@ -102,20 +92,6 @@ export const AGENT_REGISTRY_ABI = [
       { name: "name", type: "string", indexed: false },
       { name: "price", type: "string", indexed: false },
     ],
-  },
-  {
-    type: "function",
-    name: "getAgentRevenue",
-    stateMutability: "view",
-    inputs: [{ name: "id", type: "uint256" }],
-    outputs: [{ name: "", type: "uint256" }],
-  },
-  {
-    type: "function",
-    name: "getTotalRevenue",
-    stateMutability: "view",
-    inputs: [],
-    outputs: [{ name: "", type: "uint256" }],
   },
 ] as const;
 
@@ -137,7 +113,6 @@ export type OnchainAgent = {
   price: string;
   description: string;
   usageTier: string;
-  priceWei: bigint;
   createdAt: bigint;
 };
 
@@ -158,17 +133,4 @@ export async function fetchOnchainAgents(): Promise<OnchainAgent[]> {
   });
 
   return agents as unknown as OnchainAgent[];
-}
-
-/** Read revenue paid for one on-chain agent. */
-export async function fetchAgentRevenue(id: bigint): Promise<bigint> {
-  if (!REGISTRY_ADDRESS) return BigInt(0);
-
-  const client = createPublicClient({ chain: botchainTestnet, transport: http() });
-  return client.readContract({
-    address: REGISTRY_ADDRESS,
-    abi: AGENT_REGISTRY_ABI,
-    functionName: "getAgentRevenue",
-    args: [id],
-  });
 }
