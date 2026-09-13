@@ -4,9 +4,22 @@ import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Bot, CreditCard, ShieldCheck, Sparkles, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
-import { fetchOnchainAgents, isRegistryConfigured } from "@/lib/registry";
+import { formatEther } from "viem";
+import { PurchaseAgentButton } from "@/app/components/purchase-agent-button";
+import { fetchAgentRevenue, fetchOnchainAgents, isRegistryConfigured } from "@/lib/registry";
 
-const initialListings = [
+type DashboardListing = {
+  id?: bigint;
+  priceWei?: bigint;
+  name: string;
+  status: string;
+  price: string;
+  usage: string;
+  revenue: string;
+  accent: string;
+};
+
+const initialListings: DashboardListing[] = [
   {
     name: "Alpha Research Bot",
     status: "Live",
@@ -25,18 +38,18 @@ const initialListings = [
   },
 ];
 
-const metrics = [
-  { label: "Monthly revenue", value: "$24.8K", icon: CreditCard },
-  { label: "Active listings", value: "08", icon: Bot },
-  { label: "Conversion rate", value: "18.4%", icon: TrendingUp },
-  { label: "Uptime", value: "99.9%", icon: ShieldCheck },
-];
-
 export default function DashboardPage() {
   const { open } = useAppKit();
   const { address, isConnected } = useAppKitAccount();
   const [listings, setListings] = useState(initialListings);
+  const [totalRevenue, setTotalRevenue] = useState(BigInt(0));
   const walletLabel = isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Not connected";
+  const metrics = [
+    { label: "Total revenue", value: `${formatEther(totalRevenue)} BOT`, icon: CreditCard },
+    { label: "Active listings", value: String(listings.length).padStart(2, "0"), icon: Bot },
+    { label: "Conversion rate", value: "On-chain", icon: TrendingUp },
+    { label: "Uptime", value: "99.9%", icon: ShieldCheck },
+  ];
 
   useEffect(() => {
     const loadListings = async () => {
@@ -45,15 +58,23 @@ export default function DashboardPage() {
         if (isRegistryConfigured) {
           const onchain = await fetchOnchainAgents();
           if (onchain.length > 0) {
-            setListings(
-              onchain.map((agent) => ({
+            const onchainListings = await Promise.all(
+              onchain.map(async (agent) => ({
+                id: agent.id,
+                priceWei: agent.priceWei,
                 name: agent.name,
                 status: "On-chain",
                 price: agent.price,
                 usage: agent.usageTier || "Starter plan",
-                revenue: "—",
+                revenue: `${formatEther(await fetchAgentRevenue(agent.id))} BOT`,
                 accent: "from-cyan-500 via-sky-500 to-blue-600",
               }))
+            );
+            setListings(onchainListings);
+            setTotalRevenue(
+              await Promise.all(onchain.map((agent) => fetchAgentRevenue(agent.id))).then((revenues) =>
+                revenues.reduce((sum, revenue) => sum + revenue, BigInt(0))
+              )
             );
             return;
           }
@@ -173,9 +194,13 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <button className="rounded-full border border-slate-700 bg-slate-900/70 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-cyan-500 hover:text-cyan-200">
-                  Manage
-                </button>
+                {agent.id !== undefined && agent.priceWei !== undefined ? (
+                  <PurchaseAgentButton agentId={agent.id} priceWei={agent.priceWei} />
+                ) : (
+                  <button className="rounded-full border border-slate-700 bg-slate-900/70 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-cyan-500 hover:text-cyan-200">
+                    Manage
+                  </button>
+                )}
               </div>
             ))}
           </div>
