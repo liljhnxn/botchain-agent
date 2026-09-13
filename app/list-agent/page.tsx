@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Bot, CheckCircle2, ShieldCheck, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { waitForTransactionReceipt, writeContract } from "@wagmi/core";
+import { getAccount, switchChain, waitForTransactionReceipt, writeContract } from "@wagmi/core";
 import { wagmiConfig } from "@/app/providers";
 import {
   AGENT_REGISTRY_ABI,
@@ -50,22 +50,32 @@ export default function ListAgentPage() {
     setPending(true);
 
     try {
+      if (!isRegistryConfigured || !REGISTRY_ADDRESS || !wagmiConfig) {
+        throw new Error("On-chain publishing is not configured. Add NEXT_PUBLIC_REGISTRY_ADDRESS and NEXT_PUBLIC_REOWN_PROJECT_ID in Vercel, then redeploy.");
+      }
+
+      const account = getAccount(wagmiConfig);
+      if (!account.isConnected) {
+        throw new Error("Connect your wallet before publishing.");
+      }
+
+      if (account.chainId !== botchainTestnet.id) {
+        await switchChain(wagmiConfig, { chainId: botchainTestnet.id });
+      }
+
       let onchainTx: string | null = null;
 
-      // When the registry contract is deployed, publish on-chain first.
-      if (isRegistryConfigured && REGISTRY_ADDRESS && wagmiConfig) {
-        const hash = await writeContract(wagmiConfig, {
-          address: REGISTRY_ADDRESS,
-          abi: AGENT_REGISTRY_ABI,
-          functionName: "listAgent",
-          args: [payload.name, payload.category, payload.price, payload.description, payload.usageTier],
-          chainId: botchainTestnet.id,
-        });
-        onchainTx = hash;
-        setTxHash(hash);
-        await waitForTransactionReceipt(wagmiConfig, { hash });
-        payload.status = "live";
-      }
+      const hash = await writeContract(wagmiConfig, {
+        address: REGISTRY_ADDRESS,
+        abi: AGENT_REGISTRY_ABI,
+        functionName: "listAgent",
+        args: [payload.name, payload.category, payload.price, payload.description, payload.usageTier],
+        chainId: botchainTestnet.id,
+      });
+      onchainTx = hash;
+      setTxHash(hash);
+      await waitForTransactionReceipt(wagmiConfig, { hash });
+      payload.status = "live";
 
       // Persist display metadata off-chain too (used by the dashboard fallback).
       const response = await fetch("/api/agents", {
@@ -217,11 +227,11 @@ export default function ListAgentPage() {
                       : "Publishing…"
                     : isRegistryConfigured
                       ? "Publish agent on-chain"
-                      : "Publish agent"}
+                      : "Publish agent on-chain"}
               </button>
 
               <div className="text-sm text-slate-400">
-                {isRegistryConfigured ? "Writes to AgentRegistry" : "Off-chain (registry not set)"}
+                Writes to AgentRegistry on Botchain Testnet
               </div>
             </div>
 

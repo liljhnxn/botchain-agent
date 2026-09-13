@@ -1,24 +1,57 @@
+import Link from "next/link";
 import { ArrowRight, Bot, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import { WalletButton } from "./components/wallet-button";
+
+const hasWalletConfig = Boolean(process.env.NEXT_PUBLIC_REOWN_PROJECT_ID?.trim()) && process.env.NEXT_PUBLIC_REOWN_PROJECT_ID !== "demo-project-id";
 
 const featuredAgents = [
   {
     name: "DeFi Copilot",
     category: "Trading",
     price: "0.25 BOT",
+    logo: "D",
+    accent: "from-cyan-500 via-sky-500 to-blue-600",
     description: "Automated treasury routing and market monitoring for onchain yield strategies.",
   },
   {
     name: "Risk Monitor",
     category: "Security",
     price: "0.15 BOT",
+    logo: "R",
+    accent: "from-violet-500 via-fuchsia-500 to-purple-600",
     description: "Real-time anomaly detection, wallet alerts, and smart-contract health checks.",
   },
   {
     name: "Research Agent",
     category: "Analytics",
     price: "0.35 BOT",
+    logo: "A",
+    accent: "from-emerald-500 via-teal-500 to-cyan-600",
     description: "Cross-chain signal aggregation and insight generation for strategy teams.",
+  },
+  {
+    name: "Liquidity Scout",
+    category: "Liquidity",
+    price: "0.22 BOT",
+    logo: "L",
+    accent: "from-amber-500 via-orange-500 to-rose-500",
+    description: "Finds efficient routing opportunities across AMMs, bridges, and treasury positions.",
+  },
+  {
+    name: "Yield Optimizer",
+    category: "DeFi",
+    price: "0.18 BOT",
+    logo: "Y",
+    accent: "from-lime-500 via-emerald-500 to-teal-600",
+    description: "Dynamically rebalances vault strategies to maximize risk-adjusted yield.",
+  },
+  {
+    name: "Wallet Guardian",
+    category: "Security",
+    price: "0.20 BOT",
+    logo: "W",
+    accent: "from-rose-500 via-pink-500 to-violet-600",
+    description: "Monitors wallet risk, anomaly signals, and suspicious execution conditions.",
   },
 ];
 
@@ -43,7 +76,7 @@ export default function Home() {
             </div>
           </div>
 
-          <WalletButton />
+          {hasWalletConfig ? <WalletButton /> : <div className="rounded-full border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-300">Wallet unavailable</div>}
         </header>
 
         <section className="grid gap-10 pb-10 pt-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
@@ -62,13 +95,16 @@ export default function Home() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
-              <button className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 px-6 py-3 font-medium text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:brightness-110">
+              <Link href="/agents" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 px-6 py-3 font-medium text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:brightness-110">
                 Explore Agents
                 <ArrowRight className="h-4 w-4" />
-              </button>
-              <button className="rounded-full border border-slate-700 bg-slate-900/60 px-6 py-3 font-medium text-slate-100 transition hover:border-slate-500 hover:bg-slate-800/80">
+              </Link>
+              <Link href="/list-agent" className="rounded-full border border-slate-700 bg-slate-900/60 px-6 py-3 font-medium text-slate-100 transition hover:border-slate-500 hover:bg-slate-800/80">
                 List an Agent
-              </button>
+              </Link>
+              <Link href="/dashboard" className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 font-medium text-cyan-100 transition hover:border-cyan-400 hover:bg-cyan-500/15">
+                Creator Dashboard
+              </Link>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -126,16 +162,21 @@ export default function Home() {
               <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Featured</p>
               <h3 className="mt-2 text-3xl font-bold text-white">Top performing agents</h3>
             </div>
-            <button className="text-sm font-medium text-cyan-300 hover:text-cyan-200">View all</button>
+            <Link href="/agents" className="text-sm font-medium text-cyan-300 hover:text-cyan-200">View all</Link>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {featuredAgents.map((agent) => (
               <article key={agent.name} className="rounded-3xl border border-slate-800 bg-slate-900/60 p-5 transition hover:border-cyan-500/40 hover:bg-slate-900/80">
                 <div className="mb-4 flex items-center justify-between">
-                  <span className="rounded-full border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs uppercase tracking-[0.15em] text-slate-300">
-                    {agent.category}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${agent.accent} text-lg font-bold text-white shadow-lg shadow-cyan-950/20`}>
+                      {agent.logo}
+                    </div>
+                    <span className="rounded-full border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs uppercase tracking-[0.15em] text-slate-300">
+                      {agent.category}
+                    </span>
+                  </div>
                   <span className="text-sm font-semibold text-cyan-300">{agent.price}</span>
                 </div>
 
@@ -156,19 +197,27 @@ export default function Home() {
             {[
               {
                 title: "On-chain discovery",
+                logo: "O",
+                accent: "from-cyan-500 to-blue-600",
                 description: "Search, compare, and verify agent metadata with transparent reputation signals.",
               },
               {
                 title: "Trusted execution",
+                logo: "T",
+                accent: "from-violet-500 to-purple-600",
                 description: "Deploy tasks with escrow-backed workflows and auditable transaction trails.",
               },
               {
                 title: "Creator monetization",
+                logo: "C",
+                accent: "from-emerald-500 to-teal-600",
                 description: "List agents, define usage tiers, and receive payouts directly to your wallet.",
               },
             ].map((feature) => (
               <div key={feature.title} className="rounded-3xl border border-slate-800 bg-slate-900/40 p-5">
-                <div className="mb-3 h-10 w-10 rounded-2xl bg-cyan-500/10" />
+                <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.accent} text-sm font-bold text-white`}>
+                  {feature.logo}
+                </div>
                 <h4 className="text-lg font-semibold text-white">{feature.title}</h4>
                 <p className="mt-2 text-sm leading-6 text-slate-300">{feature.description}</p>
               </div>
