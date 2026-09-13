@@ -6,6 +6,7 @@ export type AgentRecord = {
   description: string;
   usageTier: string;
   creatorAddress?: string;
+  txHash?: string;
   status: "pending" | "live" | "review";
   createdAt?: string;
 };

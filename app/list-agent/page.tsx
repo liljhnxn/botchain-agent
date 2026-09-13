@@ -5,11 +5,23 @@ import Link from "next/link";
 import { ArrowLeft, Bot, CheckCircle2, ShieldCheck, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { waitForTransactionReceipt, writeContract } from "@wagmi/core";
+import { wagmiConfig } from "@/app/providers";
+import {
+  AGENT_REGISTRY_ABI,
+  botchainTestnet,
+  explorerTxUrl,
+  isRegistryConfigured,
+  REGISTRY_ADDRESS,
+} from "@/lib/registry";
 
 export default function ListAgentPage() {
   const { open } = useAppKit();
   const { address, isConnected } = useAppKitAccount();
   const [submitted, setSubmitted] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [txHash, setTxHash] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const walletLabel = isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Connect wallet";
@@ -31,18 +43,51 @@ export default function ListAgentPage() {
       description: String(formData.get("description") || "Cross-chain market monitoring and strategy automation for research teams."),
       usageTier: String(formData.get("usageTier") || "Starter, Pro, Enterprise"),
       creatorAddress: address,
-      status: "pending",
+      status: "pending" as "pending" | "review" | "live",
     };
 
-    const response = await fetch("/api/agents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    setError(null);
+    setPending(true);
 
-    if (response.ok) {
-      setSubmitted(true);
-      setTimeout(() => router.push("/dashboard"), 800);
+    try {
+      let onchainTx: string | null = null;
+
+      // When the registry contract is deployed, publish on-chain first.
+      if (isRegistryConfigured && REGISTRY_ADDRESS && wagmiConfig) {
+        const hash = await writeContract(wagmiConfig, {
+          address: REGISTRY_ADDRESS,
+          abi: AGENT_REGISTRY_ABI,
+          functionName: "listAgent",
+          args: [payload.name, payload.category, payload.price, payload.description, payload.usageTier],
+          chainId: botchainTestnet.id,
+        });
+        onchainTx = hash;
+        setTxHash(hash);
+        await waitForTransactionReceipt(wagmiConfig, { hash });
+        payload.status = "live";
+      }
+
+      // Persist display metadata off-chain too (used by the dashboard fallback).
+      const response = await fetch("/api/agents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...payload, txHash: onchainTx }),
+      });
+
+      if (response.ok || onchainTx) {
+        setSubmitted(true);
+        setTimeout(() => router.push("/dashboard"), 1200);
+      } else {
+        setError("Failed to save the listing. Please try again.");
+      }
+    } catch (err: unknown) {
+      const message =
+        (err as { shortMessage?: string })?.shortMessage ||
+        (err as Error)?.message ||
+        "Transaction failed.";
+      setError(message);
+    } finally {
+      setPending(false);
     }
   };
 
@@ -161,28 +206,61 @@ export default function ListAgentPage() {
             <div className="mt-6 flex items-center justify-between gap-4">
               <button
                 type="submit"
-                disabled={!isConnected}
+                disabled={!isConnected || pending}
                 className="rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 px-5 py-3 text-sm font-medium text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isConnected ? "Publish agent" : "Connect wallet to publish"}
+                {!isConnected
+                  ? "Connect wallet to publish"
+                  : pending
+                    ? isRegistryConfigured
+                      ? "Publishing on-chain…"
+                      : "Publishing…"
+                    : isRegistryConfigured
+                      ? "Publish agent on-chain"
+                      : "Publish agent"}
               </button>
 
-              <div className="text-sm text-slate-400">{isConnected ? "Wallet verified" : "Wallet required"}</div>
+              <div className="text-sm text-slate-400">
+                {isRegistryConfigured ? "Writes to AgentRegistry" : "Off-chain (registry not set)"}
+              </div>
             </div>
+
+            {error ? (
+              <div className="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+                {error}
+              </div>
+            ) : null}
 
             {submitted ? (
               <div className="mt-6 space-y-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-200">
                 <div>
                   <div className="mb-2 flex items-center gap-2 font-medium text-emerald-100">
                     <CheckCircle2 className="h-4 w-4" />
-                    Submission queued
+                    {txHash ? "Listed on Botchain" : "Submission queued"}
                   </div>
-                  {address ? `Your agent was submitted from ${walletLabel} and is pending review.` : "Your agent has been submitted for review and will appear in the marketplace once verified."}
+                  {txHash
+                    ? `Your agent was published on-chain from ${walletLabel}.`
+                    : address
+                      ? `Your agent was submitted from ${walletLabel} and is pending review.`
+                      : "Your agent has been submitted for review and will appear in the marketplace once verified."}
                 </div>
 
-                <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-4 py-2 font-medium text-emerald-100 ring-1 ring-emerald-400/30 transition hover:bg-emerald-500/20">
-                  Open creator dashboard
-                </Link>
+                <div className="flex flex-wrap gap-3">
+                  {txHash ? (
+                    <a
+                      href={explorerTxUrl(txHash)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-4 py-2 font-medium text-emerald-100 ring-1 ring-emerald-400/30 transition hover:bg-emerald-500/20"
+                    >
+                      View transaction
+                    </a>
+                  ) : null}
+
+                  <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-4 py-2 font-medium text-emerald-100 ring-1 ring-emerald-400/30 transition hover:bg-emerald-500/20">
+                    Open creator dashboard
+                  </Link>
+                </div>
               </div>
             ) : null}
           </form>

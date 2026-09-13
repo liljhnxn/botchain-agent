@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "compile:contract": "node scripts/compile-contract.mjs",
+    "deploy:contract": "node scripts/deploy-contract.mjs",
+    "verify:contract": "node scripts/verify-contract.mjs"
   },
   "dependencies": {
     "@reown/appkit": "^1.8.23",
@@ -35,6 +38,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "solc": "^0.8.37",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

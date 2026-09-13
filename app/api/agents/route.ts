@@ -11,6 +11,7 @@ const agentSchema = new Schema(
     description: { type: String, required: true },
     usageTier: { type: String, required: true },
     creatorAddress: { type: String },
+    txHash: { type: String },
     status: { type: String, enum: ["pending", "review", "live"], default: "pending" },
   },
   { timestamps: true }
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
       description: String(payload.description),
       usageTier: String(payload.usageTier),
       creatorAddress: payload.creatorAddress ? String(payload.creatorAddress) : undefined,
+      txHash: payload.txHash ? String(payload.txHash) : undefined,
       status: payload.status ? String(payload.status) : "live",
     };
 

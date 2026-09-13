@@ -4,6 +4,7 @@ import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Bot, CreditCard, ShieldCheck, Sparkles, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
+import { fetchOnchainAgents, isRegistryConfigured } from "@/lib/registry";
 
 const initialListings = [
   {
@@ -39,21 +40,43 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const loadListings = async () => {
-      const response = await fetch("/api/agents");
-      if (!response.ok) return;
+      try {
+        // Prefer on-chain listings when the registry contract is deployed.
+        if (isRegistryConfigured) {
+          const onchain = await fetchOnchainAgents();
+          if (onchain.length > 0) {
+            setListings(
+              onchain.map((agent) => ({
+                name: agent.name,
+                status: "On-chain",
+                price: agent.price,
+                usage: agent.usageTier || "Starter plan",
+                revenue: "—",
+                accent: "from-cyan-500 via-sky-500 to-blue-600",
+              }))
+            );
+            return;
+          }
+        }
 
-      const agents = await response.json();
-      if (Array.isArray(agents) && agents.length > 0) {
-        setListings(
-          agents.map((agent: any) => ({
-            name: agent.name,
-            status: "Live",
-            price: agent.price,
-            usage: agent.usageTier || "Starter plan",
-            revenue: "$1,240",
-            accent: "from-cyan-500 via-sky-500 to-blue-600",
-          }))
-        );
+        const response = await fetch("/api/agents");
+        if (!response.ok) return;
+
+        const agents = await response.json();
+        if (Array.isArray(agents) && agents.length > 0) {
+          setListings(
+            agents.map((agent: any) => ({
+              name: agent.name,
+              status: "Live",
+              price: agent.price,
+              usage: agent.usageTier || "Starter plan",
+              revenue: "$1,240",
+              accent: "from-cyan-500 via-sky-500 to-blue-600",
+            }))
+          );
+        }
+      } catch {
+        // Keep the initial listings on any failure.
       }
     };
 

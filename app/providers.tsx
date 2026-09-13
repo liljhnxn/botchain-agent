@@ -44,6 +44,10 @@ const wagmiAdapter = projectId ? new WagmiAdapter({
   networks: [botchainTestnet],
 }) : null;
 
+// Exposed so non-hook code (e.g. the list-agent submit handler) can call
+// @wagmi/core actions like writeContract. Null until a project id is configured.
+export const wagmiConfig = wagmiAdapter ? wagmiAdapter.wagmiConfig : null;
+
 if (projectId && wagmiAdapter) {
   createAppKit({
     adapters: [wagmiAdapter],
