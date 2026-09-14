@@ -40,6 +40,42 @@ export const AGENT_REGISTRY_ABI = [
   },
   {
     type: "function",
+    name: "updateAgent",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "id", type: "uint256" },
+      { name: "name", type: "string" },
+      { name: "category", type: "string" },
+      { name: "price", type: "string" },
+      { name: "description", type: "string" },
+      { name: "usageTier", type: "string" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "setPayoutSettings",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "id", type: "uint256" },
+      { name: "wallet", type: "address" },
+      { name: "interval", type: "uint256" },
+      { name: "automatic", type: "bool" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "withdrawPayout",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "id", type: "uint256" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
     name: "getAgent",
     stateMutability: "view",
     inputs: [{ name: "id", type: "uint256" }],
@@ -56,6 +92,24 @@ export const AGENT_REGISTRY_ABI = [
           { name: "description", type: "string" },
           { name: "usageTier", type: "string" },
           { name: "createdAt", type: "uint256" },
+        ],
+      },
+    ],
+  },
+  {
+    type: "function",
+    name: "getPayoutSettings",
+    stateMutability: "view",
+    inputs: [{ name: "id", type: "uint256" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "wallet", type: "address" },
+          { name: "interval", type: "uint256" },
+          { name: "automatic", type: "bool" },
+          { name: "lastPayoutAt", type: "uint256" },
         ],
       },
     ],
