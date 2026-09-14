@@ -1,6 +1,6 @@
 # Botchain Agent Marketplace
 
-A Next.js marketplace demo for discovering, listing, and managing AI agents on the Botchain testnet.
+Discover, deploy, and monetize verified AI agents on Botchain through a decentralized marketplace for on-chain services.
 
 ## Features
 

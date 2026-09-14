@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Botchain Agent Marketplace",
-  description: "Decentralized marketplace for AI agents deployed on Botchain testnet.",
+  description: "Discover, deploy, and monetize verified AI agents on Botchain.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
