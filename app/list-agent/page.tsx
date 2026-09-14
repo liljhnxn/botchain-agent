@@ -41,7 +41,7 @@ export default function ListAgentPage() {
       category: String(formData.get("category") || "Analytics"),
       price: String(formData.get("price") || "0.25 BOT"),
       description: String(formData.get("description") || "Cross-chain market monitoring and strategy automation for research teams."),
-      usageTier: String(formData.get("usageTier") || "Starter, Pro, Enterprise"),
+      usageTier: String(formData.get("usageTier") || "1.2K runs"),
       creatorAddress: address,
       status: "pending" as "pending" | "review" | "live",
     };
@@ -207,7 +207,7 @@ export default function ListAgentPage() {
                 <input
                   name="usageTier"
                   type="text"
-                  defaultValue="Starter, Pro, Enterprise"
+                  defaultValue="1.2K runs"
                   className="w-full rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-base text-white outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                 />
               </label>

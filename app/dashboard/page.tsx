@@ -25,14 +25,22 @@ function parseUsageRuns(usage: string): number {
   const normalized = usage.toLowerCase().replace(/,/g, "");
   const compact = normalized.match(/(\d+(?:\.\d+)?)\s*(k|m)?/);
 
-  if (!compact) return 0;
+  if (compact) {
+    const value = Number(compact[1]);
+    const suffix = compact[2] ?? "";
 
-  const value = Number(compact[1]);
-  const suffix = compact[2] ?? "";
+    if (suffix === "k") return value * 1000;
+    if (suffix === "m") return value * 1000000;
+    return value;
+  }
 
-  if (suffix === "k") return value * 1000;
-  if (suffix === "m") return value * 1000000;
-  return value;
+  if (normalized.includes("enterprise")) return 15000;
+  if (normalized.includes("pro")) return 4200;
+  if (normalized.includes("starter")) return 1200;
+  if (normalized.includes("advanced")) return 5000;
+  if (normalized.includes("basic")) return 900;
+
+  return 1200;
 }
 
 function parseBotPrice(value: string): number {
