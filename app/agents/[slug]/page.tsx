@@ -56,6 +56,71 @@ const agents = {
       "Arbitrage Scout watches liquidity and price spreads across markets to find execution opportunities before they disappear. It highlights the most efficient route for capital deployment and rebalancing.",
     features: ["Price spread analysis", "Routing alerts", "Execution timing"],
   },
+  "yield-optimizer": {
+    name: "Yield Optimizer",
+    category: "DeFi",
+    price: "0.18 BOT",
+    rating: 4.8,
+    status: "Live",
+    logo: "Y",
+    accent: "from-lime-500 via-emerald-500 to-teal-600",
+    description: "Balances vault exposure across protocols to maximize risk-adjusted returns.",
+    longDescription:
+      "Yield Optimizer continuously reallocates capital across lending and vault opportunities to maximize risk-adjusted return while preserving liquidity and stability.",
+    features: ["Vault rebalancing", "Yield routing", "Risk-adjusted exposure"],
+  },
+  "wallet-guardian": {
+    name: "Wallet Guardian",
+    category: "Security",
+    price: "0.20 BOT",
+    rating: 4.9,
+    status: "Live",
+    logo: "W",
+    accent: "from-rose-500 via-pink-500 to-violet-600",
+    description: "Flags suspicious transaction patterns and monitors custody risk in real time.",
+    longDescription:
+      "Wallet Guardian monitors transaction flows, custody exposure, and policy violations so teams can identify suspicious activity before it becomes irreversible damage.",
+    features: ["Policy alerts", "Risk scanning", "Access monitoring"],
+  },
+  "signal-ops": {
+    name: "Signal Ops",
+    category: "Operations",
+    price: "0.27 BOT",
+    rating: 4.6,
+    status: "Live",
+    logo: "O",
+    accent: "from-sky-500 via-cyan-500 to-indigo-600",
+    description: "Automates smart routing, execution alerts, and operator handoff workflows.",
+    longDescription:
+      "Signal Ops coordinates market signals, threshold rules, and execution handoffs to keep operational teams aligned with real-time market conditions.",
+    features: ["Route automation", "Event triggers", "Ops routing"],
+  },
+  "market-mapper": {
+    name: "Market Mapper",
+    category: "Analytics",
+    price: "0.16 BOT",
+    rating: 4.7,
+    status: "Live",
+    logo: "M",
+    accent: "from-indigo-500 via-violet-500 to-purple-600",
+    description: "Visualizes liquidity and flow patterns so teams can spot emerging opportunities earlier.",
+    longDescription:
+      "Market Mapper interprets liquidity movement and market structure across venues, helping teams identify early signals before broader market participation changes course.",
+    features: ["Flow mapping", "Opportunity spotting", "Liquidity analysis"],
+  },
+  "audit-ally": {
+    name: "Audit Ally",
+    category: "Compliance",
+    price: "0.19 BOT",
+    rating: 4.8,
+    status: "Live",
+    logo: "A",
+    accent: "from-amber-500 via-orange-500 to-red-500",
+    description: "Performs policy checks and compliance scoring for onchain operational workflows.",
+    longDescription:
+      "Audit Ally evaluates operational behavior and transaction patterns against policy checks to surface potential compliance issues before review cycles stall execution.",
+    features: ["Policy checks", "Compliance scoring", "Review reporting"],
+  },
 };
 
 export function generateStaticParams() {
