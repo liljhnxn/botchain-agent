@@ -21,6 +21,55 @@ type DashboardListing = {
   accent: string;
 };
 
+function parseUsageRuns(usage: string): number {
+  const normalized = usage.toLowerCase().replace(/,/g, "");
+  const compact = normalized.match(/(\d+(?:\.\d+)?)\s*(k|m)?/);
+
+  if (!compact) return 0;
+
+  const value = Number(compact[1]);
+  const suffix = compact[2] ?? "";
+
+  if (suffix === "k") return value * 1000;
+  if (suffix === "m") return value * 1000000;
+  return value;
+}
+
+function parseBotPrice(value: string): number {
+  const match = value.match(/(\d+(?:\.\d+)?)\s*(bot)?/i);
+  if (!match) return 0;
+  return Number(match[1]);
+}
+
+function estimateRevenueFromListing(price: string, usage: string): string {
+  const botAmount = parseBotPrice(price);
+  const usageRuns = parseUsageRuns(usage);
+  if (!botAmount || !usageRuns) {
+    return "$0";
+  }
+
+  const usdValue = botAmount * usageRuns * 1.4;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(usdValue);
+}
+
+function revenueMetric(listings: DashboardListing[]): string {
+  const total = listings.reduce((sum, listing) => {
+    const numericRevenue = Number.parseFloat(listing.revenue.replace(/[$,]/g, ""));
+    return sum + (Number.isFinite(numericRevenue) ? numericRevenue : 0);
+  }, 0);
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(total);
+}
+
 const initialListings: DashboardListing[] = [
   {
     name: "Alpha Research Bot",
@@ -29,7 +78,7 @@ const initialListings: DashboardListing[] = [
     status: "Live",
     price: "0.25 BOT",
     usage: "1.2K runs",
-    revenue: "$4,820",
+    revenue: estimateRevenueFromListing("0.25 BOT", "1.2K runs"),
     accent: "from-cyan-500 via-sky-500 to-blue-600",
   },
   {
@@ -39,16 +88,9 @@ const initialListings: DashboardListing[] = [
     status: "Live",
     price: "0.32 BOT",
     usage: "2.7K runs",
-    revenue: "$8,160",
+    revenue: estimateRevenueFromListing("0.32 BOT", "2.7K runs"),
     accent: "from-violet-500 via-fuchsia-500 to-purple-600",
   },
-];
-
-const metrics = [
-  { label: "Monthly revenue", value: "$24.8K", icon: CreditCard },
-  { label: "Active listings", value: "08", icon: Bot },
-  { label: "Conversion rate", value: "18.4%", icon: TrendingUp },
-  { label: "Uptime", value: "99.9%", icon: ShieldCheck },
 ];
 
 function payoutInterval(schedule: string) {
@@ -69,6 +111,12 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const walletLabel = isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Not connected";
+  const metrics = [
+    { label: "Monthly revenue", value: revenueMetric(listings), icon: CreditCard },
+    { label: "Active listings", value: String(listings.length).padStart(2, "0"), icon: Bot },
+    { label: "Conversion rate", value: "18.4%", icon: TrendingUp },
+    { label: "Uptime", value: "99.9%", icon: ShieldCheck },
+  ];
 
   const handleManage = (agent: DashboardListing) => {
     setSelectedListing(agent);
@@ -129,6 +177,7 @@ export default function DashboardPage() {
         name: draft.name.trim(),
         price: draft.price.trim(),
         usage: draft.usage.trim() || "Starter plan",
+        revenue: estimateRevenueFromListing(draft.price.trim(), draft.usage.trim() || "Starter plan"),
       };
 
       setListings((current) => current.map((listing) => (listing === selectedListing ? updatedListing : listing)));
@@ -207,7 +256,7 @@ export default function DashboardPage() {
                 status: "On-chain",
                 price: agent.price,
                 usage: agent.usageTier || "Starter plan",
-                revenue: "—",
+                revenue: estimateRevenueFromListing(agent.price, agent.usageTier || "Starter plan"),
                 accent: "from-cyan-500 via-sky-500 to-blue-600",
               }))
             );
@@ -222,14 +271,14 @@ export default function DashboardPage() {
         if (Array.isArray(agents) && agents.length > 0) {
           setListings(
             agents.map((agent: any) => ({
-                id: undefined,
+              id: undefined,
               name: agent.name,
-                category: agent.category || "General",
-                description: agent.description || "",
+              category: agent.category || "General",
+              description: agent.description || "",
               status: "Live",
               price: agent.price,
               usage: agent.usageTier || "Starter plan",
-              revenue: "$1,240",
+              revenue: estimateRevenueFromListing(agent.price, agent.usageTier || "Starter plan"),
               accent: "from-cyan-500 via-sky-500 to-blue-600",
             }))
           );
