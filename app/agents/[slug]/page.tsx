@@ -203,7 +203,7 @@ export default async function AgentDetailPage({
                 <Bot className="h-4 w-4 text-cyan-300" />
                 Execution layer
               </div>
-              <div className="text-lg font-semibold text-white">Botchain Testnet</div>
+              <div className="text-lg font-semibold text-white">BOT Chain Mainnet</div>
             </div>
 
             <DeployAgentButton agentName={agent.name} />

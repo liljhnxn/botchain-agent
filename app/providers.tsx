@@ -7,27 +7,8 @@ import { defineChain } from "viem";
 import { WagmiProvider } from "wagmi";
 import { type ReactNode } from "react";
 
-export const botchainTestnet = defineChain({
-  id: 968,
-  name: "Botchain Testnet",
-  network: "botchain-testnet",
-  nativeCurrency: {
-    decimals: 18,
-    name: "BOT",
-    symbol: "BOT",
-  },
-  rpcUrls: {
-    default: { http: ["https://rpc.bohr.life"] },
-    public: { http: ["https://rpc.bohr.life"] },
-  },
-  blockExplorers: {
-    default: {
-      name: "Botchain Scan",
-      url: "https://scan.botchain.ai",
-    },
-  },
-  testnet: true,
-});
+import { botchainMainnet, botchainTestnet, activeChain } from "@/lib/registry";
+export { botchainMainnet, botchainTestnet, activeChain };
 
 const rawProjectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID?.trim();
 const projectId = rawProjectId && rawProjectId !== "demo-project-id" ? rawProjectId : undefined;
@@ -41,7 +22,7 @@ const metadata = {
 
 const wagmiAdapter = projectId ? new WagmiAdapter({
   projectId,
-  networks: [botchainTestnet],
+  networks: [botchainMainnet, botchainTestnet],
 }) : null;
 
 // Exposed so non-hook code (e.g. the list-agent submit handler) can call
@@ -52,8 +33,8 @@ if (projectId && wagmiAdapter) {
   createAppKit({
     adapters: [wagmiAdapter],
     projectId,
-    networks: [botchainTestnet],
-    defaultNetwork: botchainTestnet,
+    networks: [botchainMainnet, botchainTestnet],
+    defaultNetwork: activeChain,
     metadata,
     features: {
       analytics: false,

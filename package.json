@@ -9,7 +9,9 @@
     "lint": "eslint",
     "compile:contract": "node scripts/compile-contract.mjs",
     "deploy:contract": "node scripts/deploy-contract.mjs",
-    "verify:contract": "node scripts/verify-contract.mjs"
+    "deploy:contract:mainnet": "node scripts/deploy-contract-mainnet.mjs",
+    "verify:contract": "node scripts/verify-contract.mjs",
+    "verify:contract:mainnet": "node scripts/verify-contract-mainnet.mjs"
   },
   "dependencies": {
     "@reown/appkit": "^1.8.23",

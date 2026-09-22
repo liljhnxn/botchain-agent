@@ -9,7 +9,7 @@ import { getAccount, switchChain, waitForTransactionReceipt, writeContract } fro
 import { wagmiConfig } from "@/app/providers";
 import {
   AGENT_REGISTRY_ABI,
-  botchainTestnet,
+  activeChain,
   explorerTxUrl,
   isRegistryConfigured,
   REGISTRY_ADDRESS,
@@ -59,8 +59,8 @@ export default function ListAgentPage() {
         throw new Error("Connect your wallet before publishing.");
       }
 
-      if (account.chainId !== botchainTestnet.id) {
-        await switchChain(wagmiConfig, { chainId: botchainTestnet.id });
+      if (account.chainId !== activeChain.id) {
+        await switchChain(wagmiConfig, { chainId: activeChain.id });
       }
 
       let onchainTx: string | null = null;
@@ -70,7 +70,7 @@ export default function ListAgentPage() {
         abi: AGENT_REGISTRY_ABI,
         functionName: "listAgent",
         args: [payload.name, payload.category, payload.price, payload.description, payload.usageTier],
-        chainId: botchainTestnet.id,
+        chainId: activeChain.id,
       });
       onchainTx = hash;
       setTxHash(hash);
@@ -231,7 +231,7 @@ export default function ListAgentPage() {
               </button>
 
               <div className="text-sm text-slate-400">
-                Writes to AgentRegistry on Botchain Testnet
+                Writes to AgentRegistry on {activeChain.name}
               </div>
             </div>
 

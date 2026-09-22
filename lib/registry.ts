@@ -1,6 +1,20 @@
 import { createPublicClient, defineChain, http } from "viem";
 
-// Botchain Testnet — kept in sync with app/providers.tsx.
+// BOT Chain Mainnet & Testnet configurations.
+export const botchainMainnet = defineChain({
+  id: 677,
+  name: "BOT Chain",
+  nativeCurrency: { decimals: 18, name: "BOT", symbol: "BOT" },
+  rpcUrls: {
+    default: { http: ["https://rpc.botchain.ai"] },
+    public: { http: ["https://rpc.botchain.ai"] },
+  },
+  blockExplorers: {
+    default: { name: "Botchain Scan", url: "https://scan.botchain.ai" },
+  },
+  testnet: false,
+});
+
 export const botchainTestnet = defineChain({
   id: 968,
   name: "Botchain Testnet",
@@ -14,6 +28,9 @@ export const botchainTestnet = defineChain({
   },
   testnet: true,
 });
+
+export const activeChain =
+  process.env.NEXT_PUBLIC_CHAIN_ID === "968" ? botchainTestnet : botchainMainnet;
 
 // ABI mirrors contracts/AgentRegistry.sol. `as const` gives wagmi/viem full type
 // inference for function names, args, and return types.
@@ -172,14 +189,14 @@ export type OnchainAgent = {
 
 /** Block explorer URL for a transaction hash. */
 export function explorerTxUrl(hash: string) {
-  return `${botchainTestnet.blockExplorers.default.url}/tx/${hash}`;
+  return `${activeChain.blockExplorers.default.url}/tx/${hash}`;
 }
 
 /** Read every agent from the on-chain registry. Returns [] when not configured. */
 export async function fetchOnchainAgents(): Promise<OnchainAgent[]> {
   if (!REGISTRY_ADDRESS) return [];
 
-  const client = createPublicClient({ chain: botchainTestnet, transport: http() });
+  const client = createPublicClient({ chain: activeChain, transport: http() });
   const agents = await client.readContract({
     address: REGISTRY_ADDRESS,
     abi: AGENT_REGISTRY_ABI,

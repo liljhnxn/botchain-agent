@@ -17,7 +17,27 @@ npm run compile:contract
 
 Writes `contracts/artifacts/AgentRegistry.json`.
 
-## Deploy to Botchain Testnet
+## Deploy to BOT Chain Mainnet (Chain ID 677)
+
+1. Put a funded BOT Chain Mainnet key in `.env.local`:
+
+   ```
+   DEPLOYER_PRIVATE_KEY=0x...
+   ```
+
+2. Deploy:
+
+   ```bash
+   npm run deploy:contract:mainnet
+   ```
+
+3. Verify contract status:
+
+   ```bash
+   npm run verify:contract:mainnet
+   ```
+
+## Deploy to Botchain Testnet (Chain ID 968)
 
 1. Put a funded Botchain Testnet key in `.env.local`:
 
@@ -31,13 +51,13 @@ Writes `contracts/artifacts/AgentRegistry.json`.
    npm run deploy:contract
    ```
 
-3. Copy the printed address into `.env.local` and restart `npm run dev`:
+3. Verify:
 
-   ```
-   NEXT_PUBLIC_REGISTRY_ADDRESS=0x...
+   ```bash
+   npm run verify:contract
    ```
 
-Once `NEXT_PUBLIC_REGISTRY_ADDRESS` is set, the marketplace reads and writes
+Once `NEXT_PUBLIC_REGISTRY_ADDRESS` is set in `.env.local` (automatically updated by the deploy scripts), the marketplace reads and writes
 agents on-chain. When it is empty, the app falls back to the off-chain API store,
 so the UI keeps working without a deployed contract.
 

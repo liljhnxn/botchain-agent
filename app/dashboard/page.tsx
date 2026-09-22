@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { getAccount, switchChain, waitForTransactionReceipt, writeContract } from "@wagmi/core";
 import { isAddress, parseEther } from "viem";
 import { wagmiConfig } from "@/app/providers";
-import { AGENT_REGISTRY_ABI, botchainTestnet, fetchOnchainAgents, isRegistryConfigured, REGISTRY_ADDRESS } from "@/lib/registry";
+import { AGENT_REGISTRY_ABI, activeChain, fetchOnchainAgents, isRegistryConfigured, REGISTRY_ADDRESS } from "@/lib/registry";
 
 type DashboardListing = {
   id?: bigint;
@@ -157,8 +157,8 @@ export default function DashboardPage() {
 
         const account = getAccount(wagmiConfig);
         if (!account.isConnected) throw new Error("Connect your wallet before saving.");
-        if (account.chainId !== botchainTestnet.id) {
-          await switchChain(wagmiConfig, { chainId: botchainTestnet.id });
+        if (account.chainId !== activeChain.id) {
+          await switchChain(wagmiConfig, { chainId: activeChain.id });
         }
 
         const updateHash = await writeContract(wagmiConfig, {
@@ -166,7 +166,7 @@ export default function DashboardPage() {
           abi: AGENT_REGISTRY_ABI,
           functionName: "updateAgent",
           args: [selectedListing.id, draft.name.trim(), selectedListing.category, draft.price.trim(), selectedListing.description, draft.usage.trim() || "Starter plan"],
-          chainId: botchainTestnet.id,
+          chainId: activeChain.id,
         });
         await waitForTransactionReceipt(wagmiConfig, { hash: updateHash });
 
@@ -175,7 +175,7 @@ export default function DashboardPage() {
           abi: AGENT_REGISTRY_ABI,
           functionName: "setPayoutSettings",
           args: [selectedListing.id, payoutSettings.wallet as `0x${string}`, payoutInterval(payoutSettings.schedule), payoutSettings.automatic],
-          chainId: botchainTestnet.id,
+          chainId: activeChain.id,
         });
         await waitForTransactionReceipt(wagmiConfig, { hash: payoutHash });
       }
@@ -217,8 +217,8 @@ export default function DashboardPage() {
     try {
       const account = getAccount(wagmiConfig);
       if (!account.isConnected) throw new Error("Connect your wallet before withdrawing.");
-      if (account.chainId !== botchainTestnet.id) {
-        await switchChain(wagmiConfig, { chainId: botchainTestnet.id });
+      if (account.chainId !== activeChain.id) {
+        await switchChain(wagmiConfig, { chainId: activeChain.id });
       }
 
       // Ensure the contract has a payout wallet even when the user skips Save changes.
@@ -227,7 +227,7 @@ export default function DashboardPage() {
         abi: AGENT_REGISTRY_ABI,
         functionName: "setPayoutSettings",
         args: [selectedListing.id, payoutSettings.wallet as `0x${string}`, payoutInterval(payoutSettings.schedule), payoutSettings.automatic],
-        chainId: botchainTestnet.id,
+        chainId: activeChain.id,
       });
       await waitForTransactionReceipt(wagmiConfig, { hash: settingsHash });
 
@@ -236,7 +236,7 @@ export default function DashboardPage() {
         abi: AGENT_REGISTRY_ABI,
         functionName: "withdrawPayout",
         args: [selectedListing.id, parseEther(withdrawAmount.trim())],
-        chainId: botchainTestnet.id,
+        chainId: activeChain.id,
       });
       await waitForTransactionReceipt(wagmiConfig, { hash });
       setWithdrawAmount("");

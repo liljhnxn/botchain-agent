@@ -91,7 +91,7 @@ export default function Home() {
             </h2>
 
             <p className="mt-6 max-w-xl text-lg text-slate-300">
-              Access verified autonomous agents, tokenized services, and on-chain workflows in a secure marketplace built for the Botchain testnet.
+              Access verified autonomous agents, tokenized services, and on-chain workflows in a secure marketplace built for the Botchain ecosystem.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -121,7 +121,7 @@ export default function Home() {
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Network</p>
-                <h3 className="mt-1 text-xl font-semibold text-white">Botchain Testnet</h3>
+                <h3 className="mt-1 text-xl font-semibold text-white">BOT Chain Mainnet</h3>
               </div>
               <div className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
                 Active
@@ -134,7 +134,7 @@ export default function Home() {
                   <Zap className="h-4 w-4 text-cyan-300" />
                   Chain ID
                 </div>
-                <div className="font-mono text-lg text-white">968 / 0x3c8</div>
+                <div className="font-mono text-lg text-white">677 / 0x2a5</div>
               </div>
 
               <div className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
@@ -142,7 +142,7 @@ export default function Home() {
                   <ShieldCheck className="h-4 w-4 text-emerald-300" />
                   RPC
                 </div>
-                <div className="truncate font-mono text-sm text-white">https://rpc.bohr.life</div>
+                <div className="truncate font-mono text-sm text-white">https://rpc.botchain.ai</div>
               </div>
 
               <div className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
