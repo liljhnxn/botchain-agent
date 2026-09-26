@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Bot, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Bot, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import { WalletButton } from "./components/wallet-button";
 
 const hasWalletConfig = Boolean(process.env.NEXT_PUBLIC_REOWN_PROJECT_ID?.trim()) && process.env.NEXT_PUBLIC_REOWN_PROJECT_ID !== "demo-project-id";
 
 const featuredAgents = [
   {
+    slug: "de-fi-copilot",
     name: "DeFi Copilot",
     category: "Trading",
     price: "0.25 BOT",
@@ -14,6 +15,7 @@ const featuredAgents = [
     description: "Automated treasury routing and market monitoring for onchain yield strategies.",
   },
   {
+    slug: "risk-monitor",
     name: "Risk Monitor",
     category: "Security",
     price: "0.15 BOT",
@@ -22,6 +24,7 @@ const featuredAgents = [
     description: "Real-time anomaly detection, wallet alerts, and smart-contract health checks.",
   },
   {
+    slug: "research-agent",
     name: "Research Agent",
     category: "Analytics",
     price: "0.35 BOT",
@@ -30,14 +33,16 @@ const featuredAgents = [
     description: "Cross-chain signal aggregation and insight generation for strategy teams.",
   },
   {
-    name: "Liquidity Scout",
+    slug: "arbitrage-scout",
+    name: "Arbitrage Scout",
     category: "Liquidity",
     price: "0.22 BOT",
-    logo: "L",
+    logo: "S",
     accent: "from-amber-500 via-orange-500 to-rose-500",
     description: "Finds efficient routing opportunities across AMMs, bridges, and treasury positions.",
   },
   {
+    slug: "yield-optimizer",
     name: "Yield Optimizer",
     category: "DeFi",
     price: "0.18 BOT",
@@ -46,6 +51,7 @@ const featuredAgents = [
     description: "Dynamically rebalances vault strategies to maximize risk-adjusted yield.",
   },
   {
+    slug: "wallet-guardian",
     name: "Wallet Guardian",
     category: "Security",
     price: "0.20 BOT",
@@ -76,7 +82,18 @@ export default function Home() {
             </div>
           </div>
 
-          {hasWalletConfig ? <WalletButton /> : <div className="rounded-full border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-300">Wallet unavailable</div>}
+          <div className="flex items-center gap-3">
+            <a
+              href="https://scan.botchain.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/60 px-3.5 py-2 text-xs font-medium text-slate-200 transition hover:border-cyan-500/50 hover:bg-slate-800/80 hover:text-white"
+            >
+              <span>Mainnet Explorer</span>
+              <ArrowUpRight className="h-3.5 w-3.5 text-cyan-400" />
+            </a>
+            {hasWalletConfig ? <WalletButton /> : <div className="rounded-full border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-300">Wallet unavailable</div>}
+          </div>
         </header>
 
         <section className="grid gap-10 pb-10 pt-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
@@ -128,30 +145,58 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
-                <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-                  <Zap className="h-4 w-4 text-cyan-300" />
+                <div className="mb-1 flex items-center gap-2 text-xs text-slate-400">
+                  <Zap className="h-3.5 w-3.5 text-cyan-300" />
                   Chain ID
                 </div>
-                <div className="font-mono text-lg text-white">677 / 0x2a5</div>
+                <div className="font-mono text-base text-white">677 / 0x2a5</div>
               </div>
 
               <div className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
-                <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-                  <ShieldCheck className="h-4 w-4 text-emerald-300" />
-                  RPC
+                <div className="mb-1 flex items-center gap-2 text-xs text-slate-400">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" />
+                  RPC Endpoint
                 </div>
-                <div className="truncate font-mono text-sm text-white">https://rpc.botchain.ai</div>
+                <div className="truncate font-mono text-xs text-white">https://rpc.botchain.ai</div>
               </div>
 
-              <div className="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
-                <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-                  <Bot className="h-4 w-4 text-violet-300" />
-                  Explorer
+              <a
+                href="https://scan.botchain.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:border-cyan-500/60 hover:bg-slate-900"
+              >
+                <div className="mb-1 flex items-center justify-between text-xs text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <Bot className="h-3.5 w-3.5 text-violet-300" />
+                    <span>Mainnet Explorer</span>
+                  </div>
+                  <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 transition group-hover:text-cyan-300" />
                 </div>
-                <div className="truncate font-mono text-sm text-white">https://scan.botchain.ai</div>
-              </div>
+                <div className="truncate font-mono text-xs text-cyan-300 group-hover:underline">
+                  https://scan.botchain.ai
+                </div>
+              </a>
+
+              <a
+                href="https://scan.botchain.ai/address/0x098110E536DD50de8386a4f3BBfA4e07833766B7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block rounded-2xl border border-slate-700 bg-slate-950/70 p-4 transition hover:border-emerald-500/60 hover:bg-slate-900"
+              >
+                <div className="mb-1 flex items-center justify-between text-xs text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>Verified Registry Contract</span>
+                  </div>
+                  <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 transition group-hover:text-emerald-300" />
+                </div>
+                <div className="truncate font-mono text-xs text-emerald-400 group-hover:underline">
+                  0x098110E536DD50de8386a4f3BBfA4e07833766B7
+                </div>
+              </a>
             </div>
           </div>
         </section>
@@ -183,10 +228,10 @@ export default function Home() {
                 <h4 className="mb-2 text-xl font-semibold text-white">{agent.name}</h4>
                 <p className="text-sm leading-6 text-slate-300">{agent.description}</p>
 
-                <button className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-white hover:text-cyan-300">
+                <Link href={`/agents/${agent.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-white hover:text-cyan-300">
                   View details
                   <ArrowRight className="h-4 w-4" />
-                </button>
+                </Link>
               </article>
             ))}
           </div>
@@ -224,6 +269,35 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        <footer className="border-t border-slate-800/80 py-8 text-sm text-slate-400">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <div className="flex items-center gap-2 text-slate-300">
+              <Bot className="h-4 w-4 text-cyan-400" />
+              <span>Botchain Agent Marketplace — BOT Chain Mainnet</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-5">
+              <a
+                href="https://scan.botchain.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-cyan-300 transition hover:text-cyan-200 hover:underline"
+              >
+                <span>Mainnet Explorer</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
+              <a
+                href="https://scan.botchain.ai/address/0x098110E536DD50de8386a4f3BBfA4e07833766B7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-emerald-400 transition hover:text-emerald-300 hover:underline"
+              >
+                <span>Verified Contract</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
+          </div>
+        </footer>
       </div>
     </main>
   );

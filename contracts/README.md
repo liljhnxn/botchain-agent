@@ -31,10 +31,16 @@ Writes `contracts/artifacts/AgentRegistry.json`.
    npm run deploy:contract:mainnet
    ```
 
-3. Verify contract status:
+3. Verify contract status on RPC:
 
    ```bash
    npm run verify:contract:mainnet
+   ```
+
+4. Verify and publish source code on Botchain Scan:
+
+   ```bash
+   npm run verify:explorer
    ```
 
 ## Deploy to Botchain Testnet (Chain ID 968)

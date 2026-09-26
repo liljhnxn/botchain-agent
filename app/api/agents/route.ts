@@ -19,13 +19,25 @@ const agentSchema = new Schema(
 
 const AgentModel = models.Agent || model("Agent", agentSchema);
 
+interface AgentDocument {
+  _id: unknown;
+  name: string;
+  category: string;
+  price: string;
+  description: string;
+  usageTier: string;
+  creatorAddress?: string;
+  status?: string;
+  createdAt?: Date | string;
+}
+
 export async function GET() {
   try {
     await connectToDatabase();
-    const agents = await AgentModel.find().sort({ createdAt: -1 }).lean();
+    const agents = await AgentModel.find().sort({ createdAt: -1 }).lean<AgentDocument[]>();
 
     return NextResponse.json(
-      agents.map((agent: any) => ({
+      agents.map((agent: AgentDocument) => ({
         _id: String(agent._id),
         name: agent.name,
         category: agent.category,

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Bot, ShieldCheck, Star, Zap } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ShieldCheck, Star, Zap } from "lucide-react";
 
 const baseAgents = [
   {
@@ -125,8 +125,20 @@ export default function AgentsPage() {
             Back to home
           </Link>
 
-          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-cyan-200">
-            Marketplace
+          <div className="flex items-center gap-3">
+            <a
+              href="https://scan.botchain.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/60 px-3.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-cyan-500/50 hover:bg-slate-800/80 hover:text-white"
+            >
+              <span>Mainnet Explorer</span>
+              <ArrowUpRight className="h-3.5 w-3.5 text-cyan-400" />
+            </a>
+
+            <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-cyan-200">
+              Marketplace
+            </div>
           </div>
         </div>
 

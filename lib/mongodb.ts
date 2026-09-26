@@ -14,7 +14,10 @@ const cached: MongooseCache = globalWithMongoose.mongoose ?? { conn: null, promi
 globalWithMongoose.mongoose = cached;
 
 export async function connectToDatabase() {
-  const mongoUri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/botchain-marketplace";
+  const mongoUri = process.env.MONGODB_URI?.trim();
+  if (!mongoUri) {
+    throw new Error("MONGODB_URI is not configured");
+  }
 
   if (cached.conn) {
     return cached.conn;

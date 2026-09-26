@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.36;
 
 /// @title AgentRegistry
 /// @notice On-chain registry of AI agents listed on the Botchain marketplace.

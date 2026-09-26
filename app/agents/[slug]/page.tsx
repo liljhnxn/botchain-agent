@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Bot, CheckCircle2, ShieldCheck, Star, Zap } from "lucide-react";
+import { ArrowLeft, Bot, CheckCircle2, ShieldCheck, Star } from "lucide-react";
 import { DeployAgentButton } from "../../components/deploy-agent-button";
 
 const agents = {

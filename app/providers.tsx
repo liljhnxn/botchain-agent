@@ -3,9 +3,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createAppKit } from "@reown/appkit/react";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
-import { defineChain } from "viem";
 import { WagmiProvider } from "wagmi";
-import { type ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 
 import { botchainMainnet, botchainTestnet, activeChain } from "@/lib/registry";
 export { botchainMainnet, botchainTestnet, activeChain };
@@ -47,7 +46,7 @@ if (projectId && wagmiAdapter) {
 }
 
 export function Providers({ children }: { children: ReactNode }) {
-  const queryClient = new QueryClient();
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>

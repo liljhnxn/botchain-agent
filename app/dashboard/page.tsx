@@ -278,17 +278,25 @@ export default function DashboardPage() {
         const agents = await response.json();
         if (Array.isArray(agents) && agents.length > 0) {
           setListings(
-            agents.map((agent: any) => ({
-              id: undefined,
-              name: agent.name,
-              category: agent.category || "General",
-              description: agent.description || "",
-              status: "Live",
-              price: agent.price,
-              usage: agent.usageTier || "Starter plan",
-              revenue: estimateRevenueFromListing(agent.price, agent.usageTier || "Starter plan"),
-              accent: "from-cyan-500 via-sky-500 to-blue-600",
-            }))
+            agents.map(
+              (agent: {
+                name: string;
+                category?: string;
+                description?: string;
+                price: string;
+                usageTier?: string;
+              }) => ({
+                id: undefined,
+                name: agent.name,
+                category: agent.category || "General",
+                description: agent.description || "",
+                status: "Live",
+                price: agent.price,
+                usage: agent.usageTier || "Starter plan",
+                revenue: estimateRevenueFromListing(agent.price, agent.usageTier || "Starter plan"),
+                accent: "from-cyan-500 via-sky-500 to-blue-600",
+              })
+            )
           );
         }
       } catch {
@@ -320,6 +328,16 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="https://scan.botchain.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-xs font-medium text-slate-200 transition hover:border-cyan-500/50 hover:bg-slate-800/80 hover:text-white"
+            >
+              <span>Mainnet Explorer</span>
+              <ArrowUpRight className="h-3.5 w-3.5 text-cyan-400" />
+            </a>
+
             <button
               type="button"
               onClick={() => open()}

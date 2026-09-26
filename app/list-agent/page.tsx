@@ -2,7 +2,7 @@
 
 import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import Link from "next/link";
-import { ArrowLeft, Bot, CheckCircle2, ShieldCheck, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Bot, CheckCircle2, ShieldCheck, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getAccount, switchChain, waitForTransactionReceipt, writeContract } from "@wagmi/core";
@@ -110,8 +110,20 @@ export default function ListAgentPage() {
             Back home
           </Link>
 
-          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-cyan-200">
-            Creator hub
+          <div className="flex items-center gap-3">
+            <a
+              href="https://scan.botchain.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/60 px-3.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-cyan-500/50 hover:bg-slate-800/80 hover:text-white"
+            >
+              <span>Mainnet Explorer</span>
+              <ArrowUpRight className="h-3.5 w-3.5 text-cyan-400" />
+            </a>
+
+            <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-cyan-200">
+              Creator hub
+            </div>
           </div>
         </div>
 
@@ -230,9 +242,15 @@ export default function ListAgentPage() {
                       : "Publish agent on-chain"}
               </button>
 
-              <div className="text-sm text-slate-400">
-                Writes to AgentRegistry on {activeChain.name}
-              </div>
+              <a
+                href={`https://scan.botchain.ai/address/${REGISTRY_ADDRESS || "0x098110E536DD50de8386a4f3BBfA4e07833766B7"}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-slate-400 transition hover:text-cyan-300"
+              >
+                <span>Writes to AgentRegistry on {activeChain.name}</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
             </div>
 
             {error ? (
