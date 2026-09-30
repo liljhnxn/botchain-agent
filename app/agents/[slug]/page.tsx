@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Bot, CheckCircle2, ShieldCheck, Star } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Bot, CheckCircle2, Globe, ShieldCheck, Star } from "lucide-react";
 import { DeployAgentButton } from "../../components/deploy-agent-button";
+import { Footer } from "../../components/footer";
 
 const agents = {
   "de-fi-copilot": {
@@ -148,8 +149,21 @@ export default async function AgentDetailPage({
             Back to agents
           </Link>
 
-          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-cyan-200">
-            {agent.category}
+          <div className="flex items-center gap-3">
+            <a
+              href="https://botchain.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3.5 py-1.5 text-xs font-medium text-cyan-200 transition hover:border-cyan-400 hover:bg-cyan-500/20 hover:text-white"
+            >
+              <Globe className="h-3.5 w-3.5 text-cyan-400" />
+              <span>botchain.ai</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+
+            <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-cyan-200">
+              {agent.category}
+            </div>
           </div>
         </div>
 
@@ -221,6 +235,8 @@ export default async function AgentDetailPage({
             </div>
           </div>
         </section>
+
+        <Footer />
       </div>
     </main>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Bot, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Bot, Globe, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import { WalletButton } from "./components/wallet-button";
+import { Footer } from "./components/footer";
 
 const hasWalletConfig = Boolean(process.env.NEXT_PUBLIC_REOWN_PROJECT_ID?.trim()) && process.env.NEXT_PUBLIC_REOWN_PROJECT_ID !== "demo-project-id";
 
@@ -77,12 +78,30 @@ export default function Home() {
               <Bot className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Botchain</p>
+              <a
+                href="https://botchain.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300 hover:text-cyan-100"
+              >
+                <span>BOT Chain</span>
+                <ArrowUpRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
               <h1 className="text-lg font-semibold text-white">Agent Marketplace</h1>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
+            <a
+              href="https://botchain.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3.5 py-2 text-xs font-medium text-cyan-200 transition hover:border-cyan-400 hover:bg-cyan-500/20 hover:text-white"
+            >
+              <Globe className="h-3.5 w-3.5 text-cyan-400" />
+              <span>botchain.ai</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
             <a
               href="https://scan.botchain.ai"
               target="_blank"
@@ -108,7 +127,16 @@ export default function Home() {
             </h2>
 
             <p className="mt-6 max-w-xl text-lg text-slate-300">
-              Access verified autonomous agents, tokenized services, and on-chain workflows in a secure marketplace built for the Botchain ecosystem.
+              Access verified autonomous agents, tokenized services, and on-chain workflows in a secure marketplace built for the{" "}
+              <a
+                href="https://botchain.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-cyan-300 underline decoration-cyan-500/50 underline-offset-4 transition hover:text-cyan-100 hover:decoration-cyan-300"
+              >
+                Botchain (botchain.ai)
+              </a>{" "}
+              ecosystem.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -161,6 +189,24 @@ export default function Home() {
                 </div>
                 <div className="truncate font-mono text-xs text-white">https://rpc.botchain.ai</div>
               </div>
+
+              <a
+                href="https://botchain.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block rounded-2xl border border-cyan-500/40 bg-cyan-950/20 p-4 transition hover:border-cyan-400 hover:bg-cyan-950/40"
+              >
+                <div className="mb-1 flex items-center justify-between text-xs text-cyan-300">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-3.5 w-3.5 text-cyan-400" />
+                    <span>Official Website</span>
+                  </div>
+                  <ArrowUpRight className="h-3.5 w-3.5 text-cyan-400 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
+                <div className="truncate font-mono text-xs font-medium text-white group-hover:underline">
+                  https://botchain.ai
+                </div>
+              </a>
 
               <a
                 href="https://scan.botchain.ai"
@@ -270,34 +316,7 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="border-t border-slate-800/80 py-8 text-sm text-slate-400">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-2 text-slate-300">
-              <Bot className="h-4 w-4 text-cyan-400" />
-              <span>Botchain Agent Marketplace — BOT Chain Mainnet</span>
-            </div>
-            <div className="flex flex-wrap items-center gap-5">
-              <a
-                href="https://scan.botchain.ai"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-cyan-300 transition hover:text-cyan-200 hover:underline"
-              >
-                <span>Mainnet Explorer</span>
-                <ArrowUpRight className="h-3.5 w-3.5" />
-              </a>
-              <a
-                href="https://scan.botchain.ai/address/0x098110E536DD50de8386a4f3BBfA4e07833766B7"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-emerald-400 transition hover:text-emerald-300 hover:underline"
-              >
-                <span>Verified Contract</span>
-                <ArrowUpRight className="h-3.5 w-3.5" />
-              </a>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </main>
   );

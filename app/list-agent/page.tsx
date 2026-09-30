@@ -2,8 +2,9 @@
 
 import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Bot, CheckCircle2, ShieldCheck, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Bot, CheckCircle2, Globe, ShieldCheck, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Footer } from "../components/footer";
 import { useState } from "react";
 import { getAccount, switchChain, waitForTransactionReceipt, writeContract } from "@wagmi/core";
 import { wagmiConfig } from "@/app/providers";
@@ -111,6 +112,17 @@ export default function ListAgentPage() {
           </Link>
 
           <div className="flex items-center gap-3">
+            <a
+              href="https://botchain.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3.5 py-1.5 text-xs font-medium text-cyan-200 transition hover:border-cyan-400 hover:bg-cyan-500/20 hover:text-white"
+            >
+              <Globe className="h-3.5 w-3.5 text-cyan-400" />
+              <span>botchain.ai</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+
             <a
               href="https://scan.botchain.ai"
               target="_blank"
@@ -293,6 +305,8 @@ export default function ListAgentPage() {
             ) : null}
           </form>
         </section>
+
+        <Footer />
       </div>
     </main>
   );
